@@ -61,7 +61,7 @@ export function StatsScreen() {
             <span style={{ width: c.info ? "0%" : `${c.weight}%` }} />
           </div>
           <div style={{ width: 78, textAlign: "right", fontSize: 14, fontWeight: 800 }}>
-            {c.info ? "No puntúa" : `${c.weight}%`}
+            {c.key === "precio" ? "€" : c.key === "espera" ? "min" : c.info ? "No puntúa" : `${c.weight}%`}
           </div>
         </div>
       ))}

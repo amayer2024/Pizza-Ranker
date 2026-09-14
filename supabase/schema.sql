@@ -42,10 +42,23 @@ create policy "public read ratings" on ratings for select using (true);
 create policy "public write ratings" on ratings for all using (true) with check (true);
 
 insert into places (id, name, barrio, address, price_eur, wait_min, lat, lng) values
-  ('canpizza', 'Can Pizza', 'Chamberí', 'C. de Alonso Cano 45', 12.5, 25, 40.4417, -3.698),
-  ('grosso', 'Grosso Napoletano', 'Malasaña', 'C. de la Palma 30', 11, 20, 40.4255, -3.7058),
-  ('figurato', 'Fratelli Figurato', 'Chamberí', 'C. de Vallehermoso 6', 13.5, 40, 40.4326, -3.708),
-  ('nap', 'NAP', 'Chueca', 'C. de Hortaleza 60', 11.5, 15, 40.4239, -3.6974),
-  ('demaria', 'Demaría', 'Salamanca', 'C. de Velázquez 22', 16, 20, 40.4251, -3.6837),
-  ('sortino', 'Sortino', 'La Latina', 'C. de Toledo 40', 9, 15, 40.4122, -3.7074)
-on conflict (id) do nothing;
+  ('canpizza', 'Can Pizza Chamberí', 'Chamberí', 'C. de Santa Engracia 53', 0, 0, 40.4325951, -3.6980319)
+on conflict (id) do update set
+  name = excluded.name,
+  barrio = excluded.barrio,
+  address = excluded.address,
+  lat = excluded.lat,
+  lng = excluded.lng;
+
+insert into ratings (id, place_id, user_name, presentacion, crust, sabor, lugar, precio, espera, note, updated_at) values
+  ('canpizza-ronit', 'canpizza', 'Ronit', 7, 6.8, 6.2, 9, 15, 30, '', '2026-09-13T21:30:00.000Z'),
+  ('canpizza-momo', 'canpizza', 'Momo', 7.8, 9, 8.8, 9.3, 15, 30, '', '2026-09-13T21:31:00.000Z'),
+  ('canpizza-amit', 'canpizza', 'Amit', 7.7, 8.5, 8.2, 9.2, 13.9, 30, '', '2026-09-13T21:45:00.000Z')
+on conflict (place_id, user_name) do update set
+  presentacion = excluded.presentacion,
+  crust = excluded.crust,
+  sabor = excluded.sabor,
+  lugar = excluded.lugar,
+  precio = excluded.precio,
+  espera = excluded.espera,
+  updated_at = excluded.updated_at;

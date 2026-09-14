@@ -103,30 +103,49 @@ export function NuevaScreen() {
           {hydrated
             ? CATEGORIES.map((c) => {
                 const val = scores[c.key as CategoryKey];
+                const isMoney = c.key === "precio";
+                const isWait = c.key === "espera";
                 return (
                   <div key={c.key} className="cat-row">
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 9 }}>
-                      <div style={{ fontSize: 14, fontWeight: 700 }}>{c.label}</div>
-                      <div className="kicker">{pesoLabel(c.info, c.weight)}</div>
+                      <div style={{ fontSize: 14, fontWeight: 700 }}>{isMoney ? "Precio" : isWait ? "Tiempo Espera" : c.label}</div>
+                      <div className="kicker">{pesoLabel(c.info, c.weight, c.key)}</div>
                     </div>
                     <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
-                      <input
-                        type="range"
-                        className="ps"
-                        min={0}
-                        max={10}
-                        step={0.1}
-                        value={val}
-                        onChange={(e) =>
-                          setScores({
-                            ...scores,
-                            [c.key]: Math.round(parseFloat(e.target.value) * 10) / 10,
-                          })
-                        }
-                        style={{ flex: 1, minWidth: 0 }}
-                      />
-                      <div style={{ width: 52, textAlign: "right", fontSize: 22, fontWeight: 900, color: scoreColor(val) }}>
-                        {val.toFixed(1)}
+                      {c.info ? (
+                        <input
+                          className="input"
+                          type="number"
+                          min={0}
+                          step={isMoney ? 0.1 : 1}
+                          value={Number.isFinite(val) ? val : ""}
+                          onChange={(e) =>
+                            setScores({
+                              ...scores,
+                              [c.key]: e.target.value === "" ? 0 : Math.round(parseFloat(e.target.value) * 10) / 10,
+                            })
+                          }
+                          style={{ flex: 1, minWidth: 0 }}
+                        />
+                      ) : (
+                        <input
+                          type="range"
+                          className="ps"
+                          min={0}
+                          max={10}
+                          step={0.1}
+                          value={val}
+                          onChange={(e) =>
+                            setScores({
+                              ...scores,
+                              [c.key]: Math.round(parseFloat(e.target.value) * 10) / 10,
+                            })
+                          }
+                          style={{ flex: 1, minWidth: 0 }}
+                        />
+                      )}
+                      <div style={{ minWidth: 72, textAlign: "right", fontSize: 22, fontWeight: 900, color: c.info ? "var(--color-text)" : scoreColor(val) }}>
+                        {isMoney ? `${val.toFixed(1).replace(".", ",")} €` : isWait ? `${Math.round(val)} min` : val.toFixed(1)}
                       </div>
                     </div>
                   </div>
@@ -168,7 +187,7 @@ export function NuevaScreen() {
             {fmt(total)}
           </div>
           <div style={{ fontSize: 12, color: "var(--color-neutral-700)", lineHeight: 1.6, marginTop: 12, borderTop: "1px solid var(--color-divider)", paddingTop: 12 }}>
-            Para {place?.name}, firmado por {who}. La nota sale de Presentación 10%, Crust 30%, Sabor 40% y Lugar 20%. Precio y tiempo de espera se guardan como dato, no puntúan.
+            Para {place?.name}, firmado por {who}. La nota sale de Presentación 10%, Crust 30%, Sabor 40% y Lugar 20%. Precio (€) y tiempo de espera (min) se guardan como dato, no puntúan.
           </div>
           <button className="btn btn-primary btn-block" style={{ marginTop: 20 }} onClick={save}>
             Guardar valoración

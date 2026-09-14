@@ -69,12 +69,30 @@ export function slugify(name: string): string {
   return s || "sitio";
 }
 
-export function pesoLabel(info: boolean, weight: number): string {
+export function pesoLabel(info: boolean, weight: number, key?: string): string {
+  if (key === "precio") return "€, no puntúa";
+  if (key === "espera") return "min, no puntúa";
   return info ? "solo informativo" : `${weight}% del total`;
 }
 
-export function pesoShort(info: boolean, weight: number): string {
+export function pesoShort(info: boolean, weight: number, key?: string): string {
+  if (key === "precio") return "€";
+  if (key === "espera") return "min";
   return info ? "no puntúa" : `${weight}%`;
+}
+
+export function formatCat(key: string, n: number | null | undefined): string {
+  if (n === null || n === undefined) return "—";
+  if (key === "precio") return eurStr(n);
+  if (key === "espera") return `${Math.round(n)} min`;
+  return n.toFixed(1);
+}
+
+export function catBarWidth(key: string, n: number | null | undefined): string {
+  if (n === null || n === undefined) return "0%";
+  if (key === "precio") return `${Math.max(0, Math.min(100, (n / 25) * 100))}%`;
+  if (key === "espera") return `${Math.max(0, Math.min(100, (n / 60) * 100))}%`;
+  return barWidth(n);
 }
 
 export function defaultScores(): Scores {
@@ -83,8 +101,8 @@ export function defaultScores(): Scores {
     crust: 5,
     sabor: 5,
     lugar: 5,
-    precio: 5,
-    espera: 5,
+    precio: 0,
+    espera: 0,
   };
 }
 

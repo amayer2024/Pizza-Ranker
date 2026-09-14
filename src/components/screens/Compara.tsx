@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { AppShell } from "@/components/AppShell";
 import { usePizza } from "@/components/PizzaProvider";
-import { CATEGORIES, categoryAvg, fmt, lensRatings, placeScore, scoreColor } from "@/lib/scoring";
+import { CATEGORIES, categoryAvg, formatCat, fmt, lensRatings, placeScore, scoreColor } from "@/lib/scoring";
 import type { CategoryKey } from "@/lib/types";
 
 export function ComparaScreen() {
@@ -82,13 +82,13 @@ export function ComparaScreen() {
         return (
           <div key={c.key} className="cmp-row">
             <div style={{ fontSize: 20, fontWeight: 900, color: av > bv ? "var(--color-accent)" : "var(--color-neutral-600)" }}>
-              {av.toFixed(1)}
+              {formatCat(c.key, av)}
             </div>
             <div className="kicker" style={{ textAlign: "center" }}>
               {c.label}
             </div>
             <div style={{ fontSize: 20, fontWeight: 900, textAlign: "right", color: bv > av ? "var(--color-accent)" : "var(--color-neutral-600)" }}>
-              {bv.toFixed(1)}
+              {formatCat(c.key, bv)}
             </div>
           </div>
         );

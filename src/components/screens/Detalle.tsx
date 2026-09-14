@@ -5,9 +5,10 @@ import { useParams } from "next/navigation";
 import { AppShell } from "@/components/AppShell";
 import { usePizza } from "@/components/PizzaProvider";
 import {
-  barWidth,
+  catBarWidth,
   CATEGORIES,
   fmt,
+  formatCat,
   lensRatings,
   pesoShort,
   placeScore,
@@ -72,7 +73,7 @@ export function DetalleScreen() {
             const avg = vals.length ? vals.reduce((a, b) => a + b, 0) / vals.length : null;
             const cell = (u: string) => {
               const r = byUser(u);
-              return r ? String(r.scores[c.key as CategoryKey]) : "–";
+              return r ? formatCat(c.key, r.scores[c.key as CategoryKey]) : "–";
             };
             return (
               <div
@@ -88,13 +89,13 @@ export function DetalleScreen() {
                 <div>
                   <div style={{ fontSize: 15, fontWeight: 700 }}>{c.label}</div>
                   <div className="score-bar ink" style={{ marginTop: 8, maxWidth: 260 }}>
-                    <span style={{ width: barWidth(avg) }} />
+                    <span style={{ width: catBarWidth(c.key, avg) }} />
                   </div>
                 </div>
                 <div style={{ fontSize: 16, fontWeight: 700 }}>{cell("Momo")}</div>
                 <div style={{ fontSize: 16, fontWeight: 700 }}>{cell("Ronit")}</div>
                 <div style={{ fontSize: 16, fontWeight: 700 }}>{cell("Amit")}</div>
-                <div style={{ fontSize: 20, fontWeight: 900, textAlign: "right" }}>{fmt(avg)}</div>
+                <div style={{ fontSize: 16, fontWeight: 900, textAlign: "right" }}>{formatCat(c.key, avg)}</div>
               </div>
             );
           })}
@@ -130,19 +131,19 @@ export function DetalleScreen() {
         const avg = vals.length ? vals.reduce((a, b) => a + b, 0) / vals.length : null;
         const per = USERS.map((u) => {
           const r = byUser(u);
-          return `${u[0]} ${r ? r.scores[c.key as CategoryKey] : "–"}`;
+          return `${u[0]} ${r ? formatCat(c.key, r.scores[c.key as CategoryKey]) : "–"}`;
         }).join("  ·  ");
         return (
           <div key={c.key} className="cat-row hide-desktop">
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
               <div style={{ fontSize: 14, fontWeight: 700 }}>{c.label}</div>
               <div style={{ display: "flex", alignItems: "baseline", gap: 10 }}>
-                <span className="kicker">{pesoShort(c.info, c.weight)}</span>
-                <span style={{ fontSize: 18, fontWeight: 900 }}>{fmt(avg)}</span>
+                <span className="kicker">{pesoShort(c.info, c.weight, c.key)}</span>
+                <span style={{ fontSize: 18, fontWeight: 900 }}>{formatCat(c.key, avg)}</span>
               </div>
             </div>
             <div className="score-bar ink" style={{ marginTop: 8 }}>
-              <span style={{ width: barWidth(avg) }} />
+              <span style={{ width: catBarWidth(c.key, avg) }} />
             </div>
             <div style={{ fontSize: 11, color: "var(--color-neutral-600)", marginTop: 7, letterSpacing: "0.04em" }}>
               {per}
